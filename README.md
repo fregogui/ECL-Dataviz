@@ -1,10 +1,21 @@
 # Data Visualisation : Radar Chart
 
+## Introduction
 Le Radar Chart appelé en français : diagramme de Kiviat, diagramme en radar, diagramme en étoile ou encore en diagramme toile d'araignée permet de représenter sur un plan des attributs quantitatifs sur une échelle commune.
 
-**Exemple** [1]
+<table border="0">
+  <tr>
+    <td>
+      <img src="img/kaizen.png" style="width: 100px;">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" bgcolor="EFEFEF">
+      Exemple d'un diagramme Radar : évaluation d'une méthodologie Kaizen [1]
+    </td>
+  </tr>
+</table>
 
-<img src="img/kaizen.png" style="width: 100px;">
 
 ## Description
 
@@ -12,25 +23,67 @@ Le Radar Chart comporte N axes ayant la même origine et la même échelle. N re
 Pour une observation, on relie par des segment les axes successifs en partant de la valeur de la première variable et en terminant sur la valeur de la deuxième. On obtient ainsi un polygone fermé où il est visuellement aisé d'observer les variables à bas niveau et à aux niveau.
 Il est possible de superposer deux observation afin de les comparer et de sélectionner la meilleure en fonction des attributs à privilégier.
 
-**Exemple** [2]
-<img src="img/description.png" style="width: 100px;">
+<table border="0">
+  <tr>
+    <td>
+      <img src="img/description.png" style="width: 100px;">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" bgcolor="EFEFEF">
+      Description d'un Radar Chart [2]
+    </td>
+  </tr>
+</table>
+
 
 ## Utilisation & Exemples connus
 
 Les Radar Chart sont principalement utilisés en marketing afin de comparer plusieurs produits sur un même segment de population.
 
-**Exemple** [3]
-<img src="img/marketing.png" style="width: 100px;">
+<table border="0">
+  <tr>
+    <td>
+      <img src="img/marketing.png" style="width: 100px;">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" bgcolor="EFEFEF">
+      Usage d'un Radar Chart en Marketing [3]
+    </td>
+  </tr>
+</table>
+
 
 On retrouve aussi les Radar Chart dans le domaine des ressources humaines afin de représenter visuellement les points forts et points faibles d'un candidat.
 
-**Exemple** [4]
-<img src="img/RH.png" style="width: 100px;">
+<table border="0">
+  <tr>
+    <td>
+      <img src="img/RH.jpg" style="width: 100px;">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" bgcolor="EFEFEF">
+      Usge d'un Radar Chart dans les ressources humaines [4]
+    </td>
+  </tr>
+</table>
 
 Un example très connus d'application de cette visualisation est observable dans le jeu vidéo Fifa18 où chaque joueur se voit évaluer son niveau sur plusieurs critères.
 
-**Exemple** [5]
-<img src="img/fifa.png" style="width: 100px;">
+<table border="0">
+  <tr>
+    <td>
+      <img src="img/fifa.png" style="width: 100px;">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" bgcolor="EFEFEF">
+      Usage d'un Radar Chart dans le jeu Fifa18 [5]
+    </td>
+  </tr>
+</table>
 
 
 ## Critiques
@@ -50,7 +103,7 @@ Un example très connus d'application de cette visualisation est observable dans
 
 ## Sources
 
-* [1] Kaizn Radar Chart Figure : http://asqservicequality.org/wp-content/uploads/2016/05/Radar_Chart_Figure.png
+* [1] Kaizen Radar Chart Figure : http://asqservicequality.org/wp-content/uploads/2016/05/Radar_Chart_Figure.png
 * [2] Radar Chart Exemple : https://datavizcatalogue.com/methods/radar_chart.html
 * [3] Marketing Data Viza : https://www.edrawsoft.com/competition-analysis-charts.php
 * [4] Human ressources Radar Chart : http://www.mclarensolutions.com/wp-content/uploads/2011/01/tcfdepartmentalaverage.jpg
