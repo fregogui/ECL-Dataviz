@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+
+      .label {
+    font-family: helvetica;
+}
+
+  </style>
+</head>
+
+<body>
+  <script>
+//Définition de la taille de la fenetre
+var w = 950;
+var h = 400;
+var padding = 30;
+//Ouverture du fichier iris
+d3.csv('iris.csv', function(data) {
+    var dataset = data;
+    var taille = dataset.length;
+
+    //Creation du SVG
+    var svg = d3.select("body").append("svg").attr("width", w).attr("height", h);
+
+    //Zone visible (rectangle gris)
+    var zone_totale = svg.append("rect")
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr("width", w)
+        .attr("height", h)
+        .attr("fill", "#F2F3F4")
+        .attr("opacity", "0.9")
+        .attr("stroke", "#2C3E50")
+        .attr("stroke-width", "1");
+
+
+    var setosa_legend_figure = svg.append("path")
+        .attr("d", d3.symbol().type(forme("setosa")).size(80))
+        .attr("transform", "translate(" + (w - 5 * padding + padding / 2) + "," + (h - 5 * padding + padding / 2) + ")")
+        .attr("fill", color('setosa'));
+    var setosa_legend_text = svg.append("text")
+        .attr("x", (w - 5 * padding + padding))
+        .attr("y", h - 5 * padding + padding * 5 / 8)
+        .attr("class", "label")
+        .style("font-size", "16px")
+        .text("Setosa");
+
+    var virginica_legend_figure = svg.append("path")
+        .attr("d", d3.symbol().type(forme("virginica")).size(80))
+        .attr("transform", "translate(" + (w - 5 * padding + padding / 2) + "," + (h - 4 * padding + padding / 2) + ")")
+        .attr("fill", color('virginica'));
+    var virginica_legend_text = svg.append("text")
+        .attr("x", (w - 5 * padding + padding))
+        .attr("y", h - 4 * padding + padding * 5 / 8)
+        .attr("class", "label")
+        .style("font-size", "16px")
+        .text("Virginica");
+
+    var versicolor_legend_figure = svg.append("path")
+        .attr("d", d3.symbol().type(forme("versicolor")).size(80))
+        .attr("transform", "translate(" + (w - 5 * padding + padding / 2) + "," + (h - 3 * padding + padding / 2) + ")")
+        .attr("fill", color('versicolor'));
+    var versicolor_legend_text = svg.append("text")
+        .attr("x", (w - 5 * padding + padding))
+        .attr("y", h - 3 * padding + padding * 5 / 8)
+        .attr("class", "label")
+        .style("font-size", "16px")
+        .text("Versicolor");
+
+
+    //Fonctions d'adaptation des échelles
+    var x_min = d3.min(dataset, function(d) {
+        return parseFloat(d["sepal_length"]);
+    })
+    var x_max = d3.max(dataset, function(d) {
+        return parseFloat(d["sepal_length"]);
+    })
+    var xScale = d3.scaleLinear()
+        .domain([x_min, x_max])
+        .range([padding, w - padding / 2 * 2]);
+    var yScale = d3.scaleLinear()
+        .domain([d3.min(dataset, function(d) {
+            return parseFloat(d["sepal_width"]);
+        }), d3.max(dataset, function(d) {
+            return parseFloat(d["sepal_width"]);
+        })])
+        .range([h - padding, padding / 2]);
+
+    //Mise en place des axes
+    var xAxis = d3.axisBottom()
+        .scale(xScale);
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
+    svg.append("g")
+        .call(xAxis)
+        .attr("transform", "translate(0," + (h - padding) + ")");
+    svg.append("g")
+        .call(yAxis)
+        .attr("transform", "translate(" + (padding) + ",0)");
+    
+    //Ajout des points
+    var point = svg.selectAll(".point").data(dataset).enter().append("path")
+        .attr("d", d3.symbol().type(function(d) {
+            return forme(d["species"]);
+        }).size(30))
+        .attr("transform", function(d) {
+            return "translate(" + xScale(parseFloat(d["sepal_length"])) + "," + yScale(parseFloat(d["sepal_width"])) + ")";
+        })
+        .attr("fill", function(d) {
+            return color(d["species"]);
+        });
+		//Fonction de regression lineaire, 
+		//sortie : les couples des prédictions des valeurs extrèmes
+    function regression(data, species_to_plot) {
+        var xr = 0;
+        var yr = 0;
+        var x_mean = 0;
+        var y_mean = 0;
+        var term1 = 0;
+        var term2 = 0;
+        var x_gauche = x_min;
+        var x_droite = x_max;
+        var n = data[0].length;
+        for (var i = 0; i < n; i++) {
+            x_mean += data[0][i];
+            y_mean += data[1][i];
+        }
+        x_mean /= n;
+        y_mean /= n;
+        for (var i = 0; i < n; i++) {
+            xr = data[0][i] - x_mean;
+            yr = data[1][i] - y_mean;
+            term1 += xr * yr;
+            term2 += xr * xr;
+        }
+        var b1 = term1 / term2;
+        var b0 = y_mean - (b1 * x_mean);
+        console.log(yScale(b0));
+        return [{
+            "x": x_gauche,
+            "y": b0 + x_gauche * b1
+        }, {
+            "x": x_droite,
+            "y": b0 + x_droite * b1
+        }, species_to_plot];
+    };
+
+
+		//Formatage des données pour une espece données pour permettre la regression
+    function format_data_regression(data_to_convert, species) {
+        var clean_data = [
+            [],
+            []
+        ]
+        var n = data_to_convert.length
+        for (var i = 0; i < n; i++) {
+            if (data_to_convert[i]["species"] === species) {
+                clean_data[0].push(parseFloat(data_to_convert[i]["sepal_length"]));
+                clean_data[1].push(parseFloat(data_to_convert[i]["sepal_width"]));
+            }
+        }
+        return clean_data;
+    }
+
+		//Creation d'un veteur qui regroupe les couples d'extreme 
+  	//de la droite de regression par espèce
+    var lineData = [regression(format_data_regression(dataset, "setosa"), "setosa"),
+        regression(format_data_regression(dataset, "virginica"), "virginica"),
+        regression(format_data_regression(dataset, "versicolor"), "versicolor")
+    ]
+
+
+    // ajout des droites de regression. lineData du type [[{ "x": 4.5,  "y": 2.2},{ "x": 7, "y": 4.4},"setosa"],...]
+    var droite = svg.selectAll(".droite").data(lineData).enter().append("path")
+        .attr("class", "line")
+        .attr("d", d3.line().x(function(d) {
+            return xScale(d.x);
+        }).y(function(d) {
+            return yScale(d.y);
+        }))
+        .attr("stroke", function(d) {
+            return color(d[2])
+        })
+        .attr("stroke-width", "3");
+
+    //Ajout d'un titre
+    var titre = svg.append("text")
+        .attr("x", (w / 2) + w / 4)
+        .attr("y", (padding * 5 / 4))
+        .attr("text-anchor", "middle")
+        .attr("class", "label")
+        .style("font-size", "25px")
+        .text("ScatterPlot Iris");
+
+    //Ajout d'une légende :
+    var zone_legende = svg.append("rect")
+        .attr('x', w - 5 * padding)
+        .attr('y', h - 5 * padding)
+        .attr("width", 4 * padding)
+        .attr("height", 3 * padding)
+        .attr("fill", "#EBF5FB")
+        .attr("opacity", "0.5")
+        .attr("stroke", "#2C3E50")
+        .attr("stroke-width", "1");
+
+    var setosa_legend_figure = svg.append("path")
+        .attr("d", d3.symbol().type(forme("setosa")).size(80))
+        .attr("transform", "translate(" + (w - 5 * padding + padding / 2) + "," + (h - 5 * padding + padding / 2) + ")")
+        .attr("fill", color('setosa'));
+    var setosa_legend_text = svg.append("text")
+        .attr("x", (w - 5 * padding + padding))
+        .attr("y", h - 5 * padding + padding * 5 / 8)
+        .attr("class", "label")
+        .style("font-size", "16px")
+        .text("Setosa");
+
+    var virginica_legend_figure = svg.append("path")
+        .attr("d", d3.symbol().type(forme("virginica")).size(80))
+        .attr("transform", "translate(" + (w - 5 * padding + padding / 2) + "," + (h - 4 * padding + padding / 2) + ")")
+        .attr("fill", color('virginica'));
+    var virginica_legend_text = svg.append("text")
+        .attr("x", (w - 5 * padding + padding))
+        .attr("y", h - 4 * padding + padding * 5 / 8)
+        .attr("class", "label")
+        .style("font-size", "16px")
+        .text("Virginica");
+
+    var versicolor_legend_figure = svg.append("path")
+        .attr("d", d3.symbol().type(forme("versicolor")).size(80))
+        .attr("transform", "translate(" + (w - 5 * padding + padding / 2) + "," + (h - 3 * padding + padding / 2) + ")")
+        .attr("fill", color('versicolor'));
+    var versicolor_legend_text = svg.append("text")
+        .attr("x", (w - 5 * padding + padding))
+        .attr("y", h - 3 * padding + padding * 5 / 8)
+        .attr("class", "label")
+        .style("font-size", "16px")
+        .text("Versicolor");
+
+    //Fonctions de paramétrage des styles des formes et des couleurs par species
+    function forme(type) {
+        if (type === "setosa") {
+            return d3.symbolCircle;
+        } else if (type === "versicolor") {
+            return d3.symbolSquare;
+        } else if (type === "virginica") {
+            return d3.symbolTriangle;
+        } else {
+            return "error";
+        }
+    };
+
+
+    function color(type) {
+        if (type === "setosa") {
+            return "#117A65";
+        } else if (type === "versicolor") {
+            return "#6C3483";
+        } else if (type === "virginica") {
+            return "#CA6F1E";
+        } else {
+            return "black";
+        };
+    }
+});  </script>
+</body>
