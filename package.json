@@ -1,0 +1,24 @@
+{
+  "name": "ECL-Dataviz",
+  "version": "1.0.0",
+  "description": "## Introduction Le Radar Chart appelé en français : diagramme de Kiviat, diagramme en radar, diagramme en étoile ou encore en diagramme toile d'araignée permet de représenter sur un plan des attributs quantitatifs sur une échelle commune.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fregogui/ECL-Dataviz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fregogui/ECL-Dataviz/issues"
+  },
+  "homepage": "https://github.com/fregogui/ECL-Dataviz#readme",
+  "dependencies": {
+    "d3": "^4.13.0"
+  },
+  "devDependencies": {}
+}
